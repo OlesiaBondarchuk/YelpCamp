@@ -10,7 +10,8 @@ app.set("view engine", "ejs");
 // schema setup
 var campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String, 
+    description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema); // makes model that uses schema
@@ -18,7 +19,8 @@ var Campground = mongoose.model("Campground", campgroundSchema); // makes model 
 Campground.create(
     {
         name: "Salmon Greek",
-        image:"http://www.sapminature.com/wp-content/uploads/2018/01/SapmiNatureCamp-3.jpg"
+        image:"http://www.sapminature.com/wp-content/uploads/2018/01/SapmiNatureCamp-3.jpg",
+        description: "This is perfect campground!"
     }, function(err, campground){
         if(err){
             console.log(err);
@@ -59,9 +61,12 @@ app.get("/campgrounds", function(req,res){
 // making new campground
 app.post("/campgrounds", function(req,res){
     // get data from form and add to campgrounds array
-    var name = req.body.name;
-    var image = req.body.image;
-    var newCampground = {name: name, image: image};
+    var newCampground = {
+        name: req.body.name, 
+        image: req.body.image, 
+        description: req.body.description
+    };
+    
    // Create a new campground and save to DB
    Campground.create(newCampground, function(err, newlyCreated){
        if(err){
@@ -76,6 +81,13 @@ app.post("/campgrounds", function(req,res){
 // shows the form which helps us add new campground
 app.get("/campgrounds/new", function(req,res){
     res.render("new.ejs");
+});
+
+// SHOW - shows more info about one campground
+app.get("/campground/:id", function(req,res){
+    // find campground with provided id
+    //render show template with that campground
+    res.render("show");
 });
 
 app.listen(3000);
